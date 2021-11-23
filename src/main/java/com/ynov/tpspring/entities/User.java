@@ -14,10 +14,8 @@ public class User {
     @OneToMany(mappedBy = "author")
     private List<Project> authoredProjects;
 
-
     @OneToMany(mappedBy = "user")
     private List<Notification> notifications;
-
 
     @ManyToMany(mappedBy = "participants")
     private List<Project> participatingProjects;

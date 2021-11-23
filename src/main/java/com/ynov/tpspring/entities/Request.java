@@ -11,7 +11,16 @@ public class Request {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column
     private String name;
+
+    @ManyToOne
+    @JoinColumn(name = "project_id", nullable = false)
+    private Project project;
+
+
+    @Column(name = "created_at")
+    private Date createdAt = new Date();
 
     public Long getId() {
         return id;
@@ -45,11 +54,4 @@ public class Request {
         this.createdAt = createdAt;
     }
 
-    @ManyToOne
-    @JoinColumn(name = "project_id", nullable = false)
-    private Project project;
-
-
-    @Column(name = "created_at")
-    private Date createdAt = new Date();
 }
