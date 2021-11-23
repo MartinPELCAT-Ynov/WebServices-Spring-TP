@@ -54,7 +54,6 @@ public class Project {
     )
     private List<User> subscribers;
 
-
     @OneToMany(mappedBy = "project")
     private List<Message> messages;
 

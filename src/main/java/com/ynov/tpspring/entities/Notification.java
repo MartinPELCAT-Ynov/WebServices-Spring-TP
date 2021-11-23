@@ -28,8 +28,7 @@ public class Notification {
     private Project project;
 
     @Column
-    private Boolean read = false;
-
+    private Boolean readed = false;
 
     public Long getId() {
         return id;
@@ -55,14 +54,6 @@ public class Notification {
         this.message = message;
     }
 
-    public NotificationType getType() {
-        return type;
-    }
-
-    public void setType(NotificationType type) {
-        this.type = type;
-    }
-
     public Project getProject() {
         return project;
     }
@@ -71,11 +62,19 @@ public class Notification {
         this.project = project;
     }
 
-    public Boolean getRead() {
-        return read;
+    public Boolean getReaded() {
+        return readed;
     }
 
-    public void setRead(Boolean read) {
-        this.read = read;
+    public void setReaded(Boolean read) {
+        this.readed = read;
+    }
+
+    public NotificationType getType() {
+        return type;
+    }
+
+    public void setType(NotificationType type) {
+        this.type = type;
     }
 }
