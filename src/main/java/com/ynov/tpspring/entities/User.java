@@ -1,5 +1,7 @@
 package com.ynov.tpspring.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -12,16 +14,24 @@ public class User {
     private Long id;
 
     @OneToMany(mappedBy = "author")
+    @JsonIgnore
     private List<Project> authoredProjects;
 
     @OneToMany(mappedBy = "user")
+    @JsonIgnore
     private List<Notification> notifications;
 
     @ManyToMany(mappedBy = "participants")
+    @JsonIgnore
     private List<Project> participatingProjects;
 
     @ManyToMany(mappedBy = "subscribers")
+    @JsonIgnore
     private List<Project> subscribedProjects;
+
+    @ManyToMany(mappedBy = "likes")
+    @JsonIgnore
+    private List<Message> likedMessages;
 
     public Long getId() {
         return id;
