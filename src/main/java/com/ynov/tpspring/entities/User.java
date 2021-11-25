@@ -40,6 +40,18 @@ public class User {
     @JsonIgnore
     private List<Message> likedMessages;
 
+    @ManyToOne
+    @JoinColumn(name = "center_id")
+    private Center center;
+
+    public Center getCenter() {
+        return center;
+    }
+
+    public void setCenter(Center center) {
+        this.center = center;
+    }
+
     public Long getId() {
         return id;
     }

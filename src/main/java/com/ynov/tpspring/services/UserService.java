@@ -1,14 +1,17 @@
 package com.ynov.tpspring.services;
 
+import com.ynov.tpspring.dto.CreateUserDTO;
 import com.ynov.tpspring.entities.Notification;
 import com.ynov.tpspring.entities.Project;
 import com.ynov.tpspring.entities.User;
 import com.ynov.tpspring.repositories.UserRepository;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,6 +22,9 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
@@ -33,6 +39,9 @@ public class UserService implements UserDetailsService {
     }
 
     public User createOrUpdateUser(User user) {
+        if (StringUtils.isNotEmpty(user.getPassword())) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
         return userRepository.save(user);
     }
 
@@ -40,8 +49,8 @@ public class UserService implements UserDetailsService {
         userRepository.deleteById(id);
     }
 
-    public List<Notification> getUserNotifications(Long userId) {
-        return userRepository.getById(userId).getNotifications();
+    public List<Notification> getUserNotifications(String username) {
+        return userRepository.findByUsername(username).getNotifications();
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.ynov.tpspring.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
@@ -14,11 +15,17 @@ public class Message {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String content;
+
     @ManyToOne
     @JoinColumn(name = "project_id", nullable = false)
+    @JsonIgnore
     private Project project;
 
     @Column(name = "created_at")
+    @JsonIgnore
     private Date createdAt = new Date();
 
     @ManyToOne
@@ -35,7 +42,18 @@ public class Message {
 
 
     @Formula("select count(m.user_id) from message_likes m where message_id = id")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonIgnore
     private Integer likeCount;
+
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
 
     public List<User> getLikes() {
         return likes;
