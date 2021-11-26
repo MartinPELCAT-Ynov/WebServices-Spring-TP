@@ -1,30 +1,24 @@
 package com.ynov.tpspring.services;
 
-import com.ynov.tpspring.dto.CreateUserDTO;
+import com.ynov.tpspring.entities.Center;
 import com.ynov.tpspring.entities.Notification;
 import com.ynov.tpspring.entities.Project;
 import com.ynov.tpspring.entities.User;
+import com.ynov.tpspring.repositories.CenterRepository;
 import com.ynov.tpspring.repositories.UserRepository;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class UserService implements UserDetailsService {
+public class UserService {
 
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    private CenterRepository centerRepository;
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
@@ -38,10 +32,9 @@ public class UserService implements UserDetailsService {
         return userRepository.findByUsername(username);
     }
 
-    public User createOrUpdateUser(User user) {
-        if (StringUtils.isNotEmpty(user.getPassword())) {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-        }
+    public User createOrUpdateUser(User user, String centerUuid) {
+        Center center = centerRepository.findById(centerUuid).get();
+        user.setCenter(center);
         return userRepository.save(user);
     }
 
@@ -51,16 +44,6 @@ public class UserService implements UserDetailsService {
 
     public List<Notification> getUserNotifications(String username) {
         return userRepository.findByUsername(username).getNotifications();
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = getUserByUsername(username);
-        if (user != null) {
-            List<GrantedAuthority> authorities = new ArrayList<>();
-            return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
-        }
-        throw new UsernameNotFoundException("User '" + username + "' not found or inactive");
     }
 
     public List<Project> getUserParticipatingProjects(String name) {

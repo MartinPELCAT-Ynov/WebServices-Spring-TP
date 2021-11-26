@@ -4,6 +4,7 @@ import com.ynov.tpspring.dto.CreateUserDTO;
 import com.ynov.tpspring.entities.Notification;
 import com.ynov.tpspring.entities.Project;
 import com.ynov.tpspring.entities.User;
+import com.ynov.tpspring.services.AuthService;
 import com.ynov.tpspring.services.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,24 +25,20 @@ public class UserController {
     @Autowired
     ModelMapper modelMapper;
 
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    public List<User> users() {
-        return userService.getAllUsers();
-    }
+    @Autowired
+    private AuthService authService;
 
-    @PreAuthorize("isAnonymous()")
-    @RequestMapping(value = "/", method = RequestMethod.POST)
-    public User createUser(@RequestBody CreateUserDTO createUserDTO) {
-        User user = new User();
-        user.setPassword(createUserDTO.getPassword());
-        user.setUsername(createUserDTO.getUsername());
-        return userService.createOrUpdateUser(user);
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public List<User> users(Principal principal) {
+        User user = authService.whoami(principal);
+        System.out.println(user.getUsername());
+        return userService.getAllUsers();
     }
 
     @PreAuthorize("userRepository.findByUsername(user.username) == authentication.name")
     @RequestMapping(value = "/", method = RequestMethod.PUT)
-    public User updateUser(@RequestBody CreateUserDTO user) {
-        return userService.createOrUpdateUser(user);
+    public User updateUser(@RequestBody CreateUserDTO user, @RequestParam("centerUuid") String centerUuid) {
+        return userService.createOrUpdateUser(user, centerUuid);
     }
 
     @RequestMapping(value = "/{userId}", method = RequestMethod.DELETE)

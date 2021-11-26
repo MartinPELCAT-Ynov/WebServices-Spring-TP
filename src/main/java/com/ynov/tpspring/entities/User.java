@@ -6,19 +6,20 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "users")
+@Table(name = "users", uniqueConstraints = {
+        @UniqueConstraint(
+                name = "username_center",
+                columnNames = {"username", "center_id"}
+        )
+})
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
+    @Column()
     private String username;
-
-    @JsonIgnore
-    @Column
-    private String password;
 
     @OneToMany(mappedBy = "author")
     @JsonIgnore
@@ -98,14 +99,6 @@ public class User {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public List<Message> getLikedMessages() {
