@@ -7,6 +7,13 @@ import javax.persistence.*;
 @Table(name = "notifications")
 public class Notification {
 
+    public Notification(String message, NotificationType type) {
+        this.message = message;
+        this.type = type;
+    }
+
+    public Notification() {}
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

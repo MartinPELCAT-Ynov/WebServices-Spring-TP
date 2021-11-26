@@ -1,7 +1,6 @@
 package com.ynov.tpspring.services;
 
-import com.ynov.tpspring.entities.Message;
-import com.ynov.tpspring.entities.User;
+import com.ynov.tpspring.entities.*;
 import com.ynov.tpspring.repositories.MessageRepository;
 import com.ynov.tpspring.repositories.ProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +16,17 @@ public class MessageService {
     @Autowired
     private ProjectRepository projectRepository;
 
+    @Autowired
+    private NotificationService notificationService;
+
     public Message createMessage(Long projectId, Message message, User user) {
-        message.setProject(projectRepository.findById(projectId).get());
+        Project project = projectRepository.findById(projectId).get();
+        message.setProject(project);
         message.setUser(user);
-        return messageRepository.save(message);
+        messageRepository.save(message);
+        Notification notification = new Notification("New message in the project" + project.getName(), NotificationType.NEW_MESSAGE);
+        notificationService.sendNotification(notification, project.getSubscribers());
+        return message;
     }
 
     public Message getMessage(Long messageId) {

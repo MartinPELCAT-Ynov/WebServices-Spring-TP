@@ -1,11 +1,11 @@
 package com.ynov.tpspring.controllers;
 
-import com.ynov.tpspring.entities.Message;
-import com.ynov.tpspring.entities.Project;
-import com.ynov.tpspring.entities.Request;
-import com.ynov.tpspring.entities.User;
+import com.ynov.tpspring.dto.CreateParticipationDTO;
+import com.ynov.tpspring.entities.*;
+import com.ynov.tpspring.services.AuthService;
 import com.ynov.tpspring.services.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -17,6 +17,9 @@ public class ProjectController {
 
     @Autowired
     private ProjectService projectService;
+
+    @Autowired
+    private AuthService authService;
 
     @RequestMapping(value = "/{projectId}", method = RequestMethod.GET)
     public Project getProject(@PathVariable("projectId") Long projectId) {
@@ -68,5 +71,16 @@ public class ProjectController {
         return this.projectService.unsubscribe(projectId, principal.getName());
     }
 
+    @RequestMapping(value = "/{projectId}/join-request", method = RequestMethod.POST)
+    public ProjectParticipation request(@RequestBody CreateParticipationDTO participation, Principal principal, @PathVariable("projectId") Long projectId) {
+        User user = authService.whoami(principal);
+        Project project = this.projectService.getProject(projectId);
+        return this.projectService.createJoinRequest(participation, user, project);
+    }
 
+    @PreAuthorize("projectService.isProjectOwner(#projectId, #principal)")
+    @RequestMapping(value = "/{projectId}/validate-join-request/{requestId}", method = RequestMethod.POST)
+    public ProjectParticipation acceptRequest(@PathVariable("requestId") Long requestId, @PathVariable("projectId") Long projectId, Principal principal) {
+        return this.projectService.acceptRequest(requestId);
+    }
 }

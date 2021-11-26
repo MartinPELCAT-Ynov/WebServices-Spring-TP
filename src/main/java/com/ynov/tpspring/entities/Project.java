@@ -60,6 +60,17 @@ public class Project {
     @OneToMany(mappedBy = "project")
     private List<Request> requests;
 
+    @OneToMany(mappedBy = "project")
+    private List<ProjectParticipation> projectParticipations;
+
+
+    public List<ProjectParticipation> getProjectParticipations() {
+        return projectParticipations;
+    }
+
+    public void setProjectParticipations(List<ProjectParticipation> projectParticipations) {
+        this.projectParticipations = projectParticipations;
+    }
 
     public List<User> getParticipants() {
         return participants;
