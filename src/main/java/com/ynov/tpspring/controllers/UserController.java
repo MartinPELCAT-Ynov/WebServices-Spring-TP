@@ -41,11 +41,6 @@ public class UserController {
         return userService.createOrUpdateUser(user, centerUuid);
     }
 
-    @RequestMapping(value = "/{userId}", method = RequestMethod.DELETE)
-    public void deleteUser(@PathVariable("userId") Long userId) {
-        userService.deleteUser(userId);
-    }
-
     @RequestMapping(value = "/{userId}", method = RequestMethod.GET)
     public User getUser(@PathVariable("userId") Long userId) {
         return userService.getUserById(userId);

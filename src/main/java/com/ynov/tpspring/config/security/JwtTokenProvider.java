@@ -67,7 +67,6 @@ public class JwtTokenProvider {
         String centerUuid = claims.getBody().get("center", String.class);
         String username = claims.getBody().get("username", String.class);
         UserDetails userDetails = myUserDetails.loadUserByUserNameAndCenter(username, centerUuid);
-        System.out.println("UserDetails ".concat(userDetails.getUsername()));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
